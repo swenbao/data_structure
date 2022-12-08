@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <string>
+#include <queue>
 
 
 class Node;
@@ -25,7 +26,7 @@ class BST {
     public : 
         Node* search(const int& num);
         void insert(const int& num);
-        void delet(const int& num);
+        void delet(Node* & root, const int& num);
         void inorder();
         void preorder();
         void postorder();
@@ -33,8 +34,6 @@ class BST {
         void preorder(Node* current);
         void postorder(Node* current);
         void level_order();
-        
-    private :
         Node* root = 0;
 };
 
@@ -75,7 +74,7 @@ int main(){
 
         switch(choice) {
             case 'e' :
-            case 'E' : std::cout << "Exit\n"; return 0;
+            case 'E' : inFile.close(); outFile.close(); break; std::cout << "Exit\n"; return 0;
 
             case 'i' : 
             case 'I' : insert(inFile, tree); break;
@@ -87,7 +86,8 @@ int main(){
             case 'S' : search(inFile, tree); break;
 
             case 'p' :
-            case 'P' : print(tree); break;
+            case 'P' : print(tree); std::cout << "2"; break;
+
             default : std::cout << "\n\n !! (" << choice << ") " << "is not a operation. !!\n\n";
         }
 
@@ -113,66 +113,72 @@ Node* BST::search(const int& num){
 
 // insert a new node to into BST
 void BST::insert(const int& num){
-    Node* t = root;
-    while(t){ // when t hits 0, the while loop will stop
-        if(t->data == num){ // the node already exists
+    
+    Node* current = root;
+
+    if(root == 0)
+        root = new Node(num);
+    
+    while(current){ // when t hits 0, the while loop will stop
+        if(num < current->data){ 
+            if(current->left == 0){
+                current->left = new Node(num);
+                break;
+            }
+            current = current->left;
+        } else if(num > current->data){ 
+            if(current->right == 0){
+                current->right = new Node(num);
+                break;
+            }
+            current = current->right;
+        } else { // if (num == current->data)
             std::cout << "Error! Number " << num << " exists.\n";
-            return;
-        } else if(num < t->data){ 
-            t = t->left;
-        } else { // if (num > t->data)
-            t = t->right;
+            return ;
         }
     }
-    t = new Node(num); // insert
     std::cout << "Number " << num << " is inserted.\n";
 };
 
-void BST::delet(const int& num){
-    Node* t = root;
-    Node* previous;
-    bool from_left;
-
-    while(t){ 
-        if(num == t->data) break;
-        if(num < t->data){
-            previous = t;
-            t = t->left;
-            from_left = true;
-        } else {
-            previous = t;
-            t = t->right;
-            from_left = false;
-        }
-    }
-
-    if(t == 0){
+void BST::delet(Node* & root, const int& num){
+    
+    if(root == 0) {
         std::cout << "Number " << num << " is not existed.\n";
-    } else {
-        if(t->left == 0 && t->right == 0){
-            std::cout << "Number " << num << " is deleted.\n";
-            free(t);
-            if(from_left) previous->left = 0;
-            else previous->right = 0;
-        } else if(t->left == 0 && t->right != 0){
-            std::cout << "Number " << num << " is deleted.\n";
-            free(t->right);
-            t->right = 0;
-        } else if(t->left != 0 && t->right == 0){
-            std::cout << "Number " << num << " is deleted.\n";
-            free(t->left);
-            t->left = 0;
-        } else {
-            std::cout << "Number " << num << " is deleted.\n";
-            Node* del_node = t;
-            t = t->right;
-            do {
-                previous = t;
-                t = t->left;
-            } while(t->left);
-            del_node->data = t->data;
-            free(t);
-            previous->left = 0;
+        return ;
+    }
+    
+    if (num < root->data) delet(root->left, num);
+    else if (num > root->data) delet(root->right, num);
+    else {
+        // If the node has no children, simply delete it by setting the root to NULL
+        if (root->left == NULL && root->right == NULL) {
+            delete root;
+            root = NULL;
+        }
+        // If the node has one child, delete it by replacing it with its child
+        else if (root->left == NULL || root->right == NULL) {
+            
+            Node* child;
+            if(root->left == 0) child = root->right;
+            else if (root->right == 0) child = root->left;
+
+            delete root;
+            root = child;
+        }
+        // If the node has two children, find its successor and replace it with the successor
+        else {
+            Node* current = root->right;
+            Node *successor;
+            do{
+                successor = current;
+                current = current->left;
+            }while(current != 0);
+
+
+            // Replace the root's key with the successor's key
+            root->data = successor->data;
+            // Delete the successor
+            delet(root->right, successor->data);
         }
     }
 };
@@ -196,8 +202,8 @@ void BST::preorder(){
 void BST::preorder(Node* current){
     if(current){
         std::cout << current->data << " ";
-        inorder(current->left);
-        inorder(current->right);
+        preorder(current->left);
+        preorder(current->right);
     }
 }
 
@@ -213,7 +219,18 @@ void BST::postorder(Node* current){
     }
 }
 
-void BST::level_order(){}
+void BST::level_order(){
+    std::queue <Node *> q;
+    Node* current = root;
+    while(current){
+        std::cout << current->data << " ";
+        if(current->left) q.push(current->left);
+        if(current->right) q.push(current->right);
+        current = q.front();
+        q.pop();
+    }
+    std::cout << "啊啊\n";
+}
 
 void insert(std::ifstream& inFile, BST& tree){
     
@@ -230,14 +247,14 @@ void insert(std::ifstream& inFile, BST& tree){
 }
 
 void delet(std::ifstream& inFile, BST& tree){
-    
+
     std::cout << "\nDelete:\n";
     
     int num;
     while(true){
         inFile >> num;
         if(num != -1) {
-            tree.delet(num);
+            tree.delet(tree.root, num);
         } else break;
     }
     
@@ -268,5 +285,6 @@ void print(BST& tree){
     tree.postorder();
     std::cout << "The tree in level order: ";
     tree.level_order();
-    std::cout << std::endl;
+    std::cout << "ㄏㄟ" << std::endl;
+
 }
