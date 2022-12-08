@@ -31,13 +31,11 @@ void insert(node** root, int data) {
     return;
   }
 
-  // if the data is less than the root data, insert it into the left 
-subtree
+  // if the data is less than the root data, insert it into the left subtree
   if (data < (*root)->data) {
     insert(&(*root)->left, data);
   }
-  // if the data is greater than or equal to the root data, insert it into 
-the right subtree
+  // if the data is greater than or equal to the root data, insert it into the right subtree
   else {
     insert(&(*root)->right, data);
   }
@@ -59,8 +57,7 @@ node* search(node* root, int data) {
   if (data < root->data) {
     return search(root->left, data);
   }
-  // if the data is greater than or equal to the root data, search the 
-right subtree
+  // if the data is greater than or equal to the root data, search the right subtree
   else {
     return search(root->right, data);
   }
