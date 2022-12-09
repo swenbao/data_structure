@@ -73,7 +73,7 @@ int main(){
         outFile << "\n";
         outFile << "(I)nsert a number." << std::endl;
         outFile << "(D)elete a number." << std::endl;
-        outFile << "(S)search a number." << std::endl;
+        outFile << "(S)earch a number." << std::endl;
         outFile << "(P)rint 4 kinds of orders." << std::endl;
         outFile << "(E)xit" << std::endl;
 
@@ -155,7 +155,7 @@ void BST::insert(const int& num, std::ofstream& outFile){
     std::cout << "Number " << num << " is inserted.\n";
 };
 
-void BST::delet(Node* & root, const int& num, std::ofstream& outFile){
+void BST::delet(Node*& root, const int& num, std::ofstream& outFile){
     
     if(root == 0) {
         std::cout << "Number " << num << " is not existed.\n";
@@ -188,7 +188,7 @@ void BST::delet(Node* & root, const int& num, std::ofstream& outFile){
             do{
                 successor = current;
                 current = current->left;
-            }while(current != 0);
+            } while(current != 0);
 
 
             // Replace the root's key with the successor's key
@@ -196,10 +196,26 @@ void BST::delet(Node* & root, const int& num, std::ofstream& outFile){
             // Delete the successor
             delet(root->right, successor->data, outFile);
         }
-        std::cout << "Number " << num <<" is deleted.\n";
-        outFile << "Number " << num <<" is deleted.\n";
+        if(num > 0){
+            std::cout << "Number " << num <<" is deleted.\n";
+            outFile << "Number " << num <<" is deleted.\n";
+        }
     } 
 };
+void delet(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
+
+    std::cout << "\nDelete:\n";
+    outFile << "\nDelete:\n";
+    
+    int num;
+    while(true){
+        inFile >> num;
+        if(num != -1) {
+            tree.delet(tree.root, num, outFile);
+        } else break;
+    }
+    
+}
 
 void BST::inorder(std::ofstream& outFile){
     inorder(root, outFile);
@@ -272,21 +288,6 @@ void insert(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
     
 }
 
-void delet(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
-
-    std::cout << "\nDelete:\n";
-    outFile << "\nDelete:\n";
-    
-    int num;
-    while(true){
-        inFile >> num;
-        if(num != -1) {
-            tree.delet(tree.root, num, outFile);
-        } else break;
-    }
-    
-}
-
 void search(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
     
     std::cout << "\nSearch:\n";
@@ -326,7 +327,7 @@ void print(BST& tree, std::ofstream& outFile) {
     outFile << "The tree in level order: ";
 
     tree.level_order(outFile);
-    
+
     std::cout << std::endl;
     outFile << std::endl;
 }
