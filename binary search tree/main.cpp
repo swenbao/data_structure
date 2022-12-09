@@ -94,10 +94,10 @@ int main(){
             // e & E for exit
             case 'e' :
             case 'E' : 
-                inFile.close(); 
-                outFile.close(); 
                 std::cout << "\nExit\n";
                 outFile << "\nExit\n";
+                inFile.close(); 
+                outFile.close(); 
                 return 0;
 
             // i & I for insert

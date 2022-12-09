@@ -32,11 +32,11 @@ Number 9 is inserted.
 Delete:
 Number 4 is deleted.
 Number 2 is deleted.
-Number 5 is not existed.
+Number 5 is not exist.
 Number 8 is deleted.
-Number 19 is not existed.
+Number 19 is not exist.
 Number 14 is deleted.
-Number 16 is not existed.
+Number 16 is not exist.
 
 (I)nsert a number.
 (D)elete a number.
@@ -74,3 +74,5 @@ The tree in level order: 10 6 24 3 9 18 37 1
 (S)earch a number.
 (P)rint 4 kinds of orders.
 (E)xit
+
+Exit
