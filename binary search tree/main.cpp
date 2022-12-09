@@ -33,7 +33,8 @@ class BST {
     public : 
         Node* search(const int& num, std::ofstream& o);
         void insert(const int& num, std::ofstream& o);
-        void delet(Node* & root, const int& num, std::ofstream& o);
+        bool delet(Node* & root, const int& num, std::ofstream& o);
+        void delet(const int& num, std::ofstream& o);
         void inorder(std::ofstream& o);
         void preorder(std::ofstream& o);
         void postorder(std::ofstream& o);
@@ -41,6 +42,8 @@ class BST {
         void preorder(Node* current, std::ofstream& o);
         void postorder(Node* current, std::ofstream& o);
         void level_order(std::ofstream& o);
+    
+    private:
         Node* root = 0;
 };
 
@@ -213,16 +216,16 @@ void insert(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
 
 // function in BST (BST::delet)
 // delete a node in BST
-void BST::delet(Node*& root, const int& num, std::ofstream& outFile){
+bool BST::delet(Node*& root, const int& num, std::ofstream& outFile){
     
     if(root == 0) {
         std::cout << "Number " << num << " is not existed.\n";
         outFile << "Number " << num << " is not existed.\n";
-        return ;
+        return false;
     }
     
-    if (num < root->data) delet(root->left, num, outFile);
-    else if (num > root->data) delet(root->right, num, outFile);
+    if (num < root->data) return delet(root->left, num, outFile);
+    else if (num > root->data) return delet(root->right, num, outFile);
     else {
         // If the node has no children, delete it and set the root to NULL
         if (root->left == NULL && root->right == NULL) {
@@ -233,8 +236,8 @@ void BST::delet(Node*& root, const int& num, std::ofstream& outFile){
         else if (root->left == NULL || root->right == NULL) {
             
             Node* child;
-            if(root->left == 0) child = root->right;
-            else if (root->right == 0) child = root->left;
+            if(!root->left) child = root->right;
+            else if (!root->right) child = root->left;
 
             delete root;
             root = child;
@@ -251,10 +254,17 @@ void BST::delet(Node*& root, const int& num, std::ofstream& outFile){
             // Delete the successor
             delet(root->right, successor->data, outFile);
         }
-        std::cout << "Number " << num <<" is deleted.\n";
-        outFile << "Number " << num <<" is deleted.\n";
+        return true;
     } 
 };
+
+void BST::delet(const int& num, std::ofstream& outFile){
+    if(delet(root, num, outFile)){
+        std::cout << "Number " << num << " is deleted.\n";
+        outFile << "Number " << num << " is deleted.\n";
+    }
+}
+
 // delet fuction that handles the input|output, and call the BST::delete()
 void delet(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
 
@@ -265,7 +275,7 @@ void delet(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
     while(true){
         inFile >> num;
         if(num != -1) {
-            tree.delet(tree.root, num, outFile);
+            tree.delet(num, outFile);
         } else break;
     }
     

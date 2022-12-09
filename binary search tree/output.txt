@@ -30,9 +30,7 @@ Number 9 is inserted.
 (E)xit
 
 Delete:
-Number 8085552 is deleted.
 Number 4 is deleted.
-Number 3 is deleted.
 Number 2 is deleted.
 Number 5 is not existed.
 Number 8 is deleted.
