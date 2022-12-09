@@ -4,10 +4,16 @@
 #include <string>
 #include <queue>
 
-
+//////////////////////////////// forward declarations & prototypes /////////////////////////////
 class Node;
 class BST;
+void insert(std::ifstream& inFile, BST& tree, std::ofstream& o);
+void delet(std::ifstream& inFile, BST& tree, std::ofstream& o);
+void search(std::ifstream& inFile, BST& tree, std::ofstream& o);
+void print(BST& tree, std::ofstream& o);
 
+
+//////////// define the class of node of BST 
 class Node {
     friend class BST;
     public:
@@ -21,6 +27,7 @@ class Node {
         Node* right;
 };
 
+////// define the BST class ( with funstions required in this HW3 ) 
 class BST {
     friend class Node;
     public : 
@@ -37,16 +44,11 @@ class BST {
         Node* root = 0;
 };
 
-void insert(std::ifstream& inFile, BST& tree, std::ofstream& o);
-void delet(std::ifstream& inFile, BST& tree, std::ofstream& o);
-void search(std::ifstream& inFile, BST& tree, std::ofstream& o);
-void print(BST& tree, std::ofstream& o);
-
-
+/////////////////////////////////////////// main function /////////////////////////////////////////////
 int main(){
     
-    // File input
-    std::cout << "Enter file name:";
+    // File input|output
+    std::cout << "Enter file name: ";
     std::string fileName;
     std::cin >> fileName;
 
@@ -54,16 +56,21 @@ int main(){
     std::ofstream outFile;
     inFile.open(fileName);
     outFile.open("output.txt");
-    if(inFile.fail() || outFile.fail()){
+
+    // check if files opened successfully
+    if(inFile.fail() || outFile.fail()){ 
         std::cout << "Fail to open file" << std::endl;
         return 1;
     }
-    outFile << "File name: " << fileName << std::endl;
-    fileName.clear(); // free up space fileName
+    outFile << "File name: " << fileName << std::endl; // required ouput
+    fileName.clear(); 
 
+
+    // the main structure of this program
     BST tree;
-    while(true){
-
+    while(true){ // a infinite loop. will break only if the input is 'e'/'E'
+        
+        // required ouput to console & output.txt
         std::cout << "\n"; 
         std::cout << "(I)nsert a number." << std::endl; 
         std::cout << "(D)elete a number." << std::endl; 
@@ -77,10 +84,11 @@ int main(){
         outFile << "(P)rint 4 kinds of orders." << std::endl;
         outFile << "(E)xit" << std::endl;
 
+        // input the choice and call the corresponding function
         char choice;
         inFile >> choice;
-
-        switch(choice) {
+        switch(choice) { 
+            // e & E for exit
             case 'e' :
             case 'E' : 
                 inFile.close(); 
@@ -89,25 +97,33 @@ int main(){
                 outFile << "\nExit\n";
                 return 0;
 
+            // i & I for insert
             case 'i' : 
             case 'I' : insert(inFile, tree, outFile); break;
 
+            // d & D for delete
             case 'd' :
             case 'D' : delet(inFile, tree, outFile); break;
 
+            // s & S for search
             case 's' : 
             case 'S' : search(inFile, tree, outFile); break;
 
+            // p & P for print
             case 'p' :
             case 'P' : print(tree, outFile); break;
 
+            // default situation is just for debugging
             default : std::cout << "\n\n !! (" << choice << ") " << "is not a operation. !!\n\n";
         }
     }
 }
 
+///////////////////////////////////////// Defining Functions ////////////////////////////////////////////
+
+// function in BST (BST::search)
 // search a specific number in BST, and return it's pointer
-// if the BST does not contain the number then return NULL
+// if the BST does not contain the number then return 0(NULL)
 Node* BST::search(const int& num, std::ofstream& outFile){
     for(Node* t = root; t; ){ 
         if(num == t->data) {
@@ -122,9 +138,26 @@ Node* BST::search(const int& num, std::ofstream& outFile){
     outFile << "Sorry! " << num << " is not found.\n";
     return 0; //return 0 if the BST is empty or didn't find the element;
 };
+// search function that handles the input|output, and call BST::search()
+void search(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
+    
+    std::cout << "\nSearch:\n";
+    outFile << "\nSearch:\n";
+    
+    int num;
+    while(true){
+        inFile >> num;
+        if(num != -1) {
+            tree.search(num, outFile);
+        } else break;
+    }
+    
+}
 
 
+// function in BST (BST::insert)
 // insert a new node to into BST
+// implemented without recursion
 void BST::insert(const int& num, std::ofstream& outFile){
     
     Node* current = root;
@@ -132,29 +165,54 @@ void BST::insert(const int& num, std::ofstream& outFile){
     if(root == 0)
         root = new Node(num);
     
-    while(current){ // when t hits 0, the while loop will stop
+    // infinite loop. current pointer will keep tracing down 
+    while(current){ // when current hits 0, the while loop will stop
+        
+        // if num < the node, then go to left subtree
         if(num < current->data){ 
             if(current->left == 0){
                 current->left = new Node(num);
                 break;
             }
             current = current->left;
+
+        // if num > the node, then go to right subtree
         } else if(num > current->data){ 
             if(current->right == 0){
                 current->right = new Node(num);
                 break;
             }
             current = current->right;
-        } else { // if (num == current->data)
+        
+        // if num == the node, then tell the user it exists
+        } else {
             outFile << "Error! Number " << num << " exists.\n";
             std::cout << "Error! Number " << num << " exists.\n";
             return ;
         }
     }
+
+    // requried output
     outFile << "Number " << num << " is inserted.\n";
     std::cout << "Number " << num << " is inserted.\n";
 };
+// insert function that handles the input|output, and call the BST::insert
+void insert(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
+    
+    std::cout << "\nInsert:\n";
+    outFile << "\nInsert:\n";
+    
+    int num;
+    while(true){
+        inFile >> num;
+        if(num != -1) {
+            tree.insert(num, outFile);
+        } else break;
+    }
+}
 
+// function in BST (BST::delet)
+// delete a node in BST
 void BST::delet(Node*& root, const int& num, std::ofstream& outFile){
     
     if(root == 0) {
@@ -166,7 +224,7 @@ void BST::delet(Node*& root, const int& num, std::ofstream& outFile){
     if (num < root->data) delet(root->left, num, outFile);
     else if (num > root->data) delet(root->right, num, outFile);
     else {
-        // If the node has no children, simply delete it by setting the root to NULL
+        // If the node has no children, delete it by setting the root to NULL
         if (root->left == NULL && root->right == NULL) {
             delete root;
             root = NULL;
@@ -191,7 +249,7 @@ void BST::delet(Node*& root, const int& num, std::ofstream& outFile){
             } while(current != 0);
 
 
-            // Replace the root's key with the successor's key
+            // assign successor's data to the root's data 
             root->data = successor->data;
             // Delete the successor
             delet(root->right, successor->data, outFile);
@@ -202,6 +260,7 @@ void BST::delet(Node*& root, const int& num, std::ofstream& outFile){
         }
     } 
 };
+// delet fuction that handles the input|output, and call the BST::delete()
 void delet(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
 
     std::cout << "\nDelete:\n";
@@ -217,6 +276,7 @@ void delet(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
     
 }
 
+// inorder traversal in BST
 void BST::inorder(std::ofstream& outFile){
     inorder(root, outFile);
     std::cout << std::endl;
@@ -231,6 +291,7 @@ void BST::inorder(Node* current, std::ofstream& outFile){
     }
 }
 
+// preorder traversal in BST
 void BST::preorder(std::ofstream& outFile){
     preorder(root, outFile);
     std::cout << std::endl;
@@ -245,6 +306,7 @@ void BST::preorder(Node* current, std::ofstream& outFile){
     }
 }
 
+// postorder traversal in BST
 void BST::postorder(std::ofstream& outFile){
     postorder(root, outFile);
     std::cout << std::endl;
@@ -259,6 +321,8 @@ void BST::postorder(Node* current, std::ofstream& outFile){
     }
 }
 
+// level order traversal in BST
+// implement with queue
 void BST::level_order(std::ofstream& outFile){
     std::queue <Node *> q;
     Node* current = root;
@@ -273,36 +337,7 @@ void BST::level_order(std::ofstream& outFile){
     }
 }
 
-void insert(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
-    
-    std::cout << "\nInsert:\n";
-    outFile << "\nInsert:\n";
-    
-    int num;
-    while(true){
-        inFile >> num;
-        if(num != -1) {
-            tree.insert(num, outFile);
-        } else break;
-    }
-    
-}
-
-void search(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
-    
-    std::cout << "\nSearch:\n";
-    outFile << "\nSearch:\n";
-    
-    int num;
-    while(true){
-        inFile >> num;
-        if(num != -1) {
-            tree.search(num, outFile);
-        } else break;
-    }
-    
-}
-
+// print function that output prefix, infix, postfix, level order
 void print(BST& tree, std::ofstream& outFile) {
 
     std::cout << "\nPrint:\n";
