@@ -224,12 +224,12 @@ void BST::delet(Node*& root, const int& num, std::ofstream& outFile){
     if (num < root->data) delet(root->left, num, outFile);
     else if (num > root->data) delet(root->right, num, outFile);
     else {
-        // If the node has no children, delete it by setting the root to NULL
+        // If the node has no children, delete it and set the root to NULL
         if (root->left == NULL && root->right == NULL) {
             delete root;
             root = NULL;
         }
-        // If the node has one child, delete it by replacing it with its child
+        // If the node has one child, delete it and replace it with its child
         else if (root->left == NULL || root->right == NULL) {
             
             Node* child;
@@ -241,23 +241,18 @@ void BST::delet(Node*& root, const int& num, std::ofstream& outFile){
         }
         // If the node has two children, find its successor and replace it with the successor
         else {
-            Node* current = root->right;
-            Node *successor;
-            do{
-                successor = current;
-                current = current->left;
-            } while(current != 0);
-
+            Node *successor= root->right;;
+             while(successor != 0 && successor->left != 0){
+                successor = successor->left;
+            }
 
             // assign successor's data to the root's data 
             root->data = successor->data;
             // Delete the successor
             delet(root->right, successor->data, outFile);
         }
-        if(num > 0){
-            std::cout << "Number " << num <<" is deleted.\n";
-            outFile << "Number " << num <<" is deleted.\n";
-        }
+        std::cout << "Number " << num <<" is deleted.\n";
+        outFile << "Number " << num <<" is deleted.\n";
     } 
 };
 // delet fuction that handles the input|output, and call the BST::delete()
