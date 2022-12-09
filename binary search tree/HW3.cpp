@@ -74,7 +74,7 @@ int main(){
 
         switch(choice) {
             case 'e' :
-            case 'E' : inFile.close(); outFile.close(); break; std::cout << "Exit\n"; return 0;
+            case 'E' : inFile.close(); outFile.close(); std::cout << "\nExit\n"; return 0;
 
             case 'i' : 
             case 'I' : insert(inFile, tree); break;
@@ -86,14 +86,13 @@ int main(){
             case 'S' : search(inFile, tree); break;
 
             case 'p' :
-            case 'P' : print(tree); std::cout << "2"; break;
+            case 'P' : print(tree); break;
 
             default : std::cout << "\n\n !! (" << choice << ") " << "is not a operation. !!\n\n";
         }
 
     }
 }
-
 
 // search a specific number in BST, and return it's pointer
 // if the BST does not contain the number then return NULL
@@ -180,7 +179,8 @@ void BST::delet(Node* & root, const int& num){
             // Delete the successor
             delet(root->right, successor->data);
         }
-    }
+        std::cout << "Number " << num <<" is deleted.\n";
+    } 
 };
 
 void BST::inorder(){
@@ -213,8 +213,8 @@ void BST::postorder(){
 }
 void BST::postorder(Node* current){
     if(current){
-        inorder(current->left);
-        inorder(current->right);
+        postorder(current->left);
+        postorder(current->right);
         std::cout << current->data << " ";
     }
 }
@@ -222,14 +222,14 @@ void BST::postorder(Node* current){
 void BST::level_order(){
     std::queue <Node *> q;
     Node* current = root;
+
     while(current){
         std::cout << current->data << " ";
         if(current->left) q.push(current->left);
         if(current->right) q.push(current->right);
         current = q.front();
-        q.pop();
+        if(current) q.pop();
     }
-    std::cout << "啊啊\n";
 }
 
 void insert(std::ifstream& inFile, BST& tree){
@@ -285,6 +285,5 @@ void print(BST& tree){
     tree.postorder();
     std::cout << "The tree in level order: ";
     tree.level_order();
-    std::cout << "ㄏㄟ" << std::endl;
-
+    std::cout << std::endl;
 }
