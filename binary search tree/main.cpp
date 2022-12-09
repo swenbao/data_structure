@@ -219,8 +219,8 @@ void insert(std::ifstream& inFile, BST& tree, std::ofstream& outFile){
 bool BST::delet(Node*& root, const int& num, std::ofstream& outFile){
     
     if(root == 0) {
-        std::cout << "Number " << num << " is not existed.\n";
-        outFile << "Number " << num << " is not existed.\n";
+        std::cout << "Number " << num << " is not exist.\n";
+        outFile << "Number " << num << " is not exist.\n";
         return false;
     }
     
