@@ -51,7 +51,7 @@ int main(){
                 numVert++;
                 break;
             }
-    std::cout << numVert << std::endl;
+    //std::cout << numVert << std::endl;
 
     // print adjacency matrix for debugging
     /*
@@ -62,7 +62,7 @@ int main(){
         std::cout << "\n";
     }
     */
-
+    
     std::array<int, 26> connect;
     std::array<int, 26> shortest;
     std::array<bool, 26> visited;
@@ -82,11 +82,13 @@ int main(){
     for(int j = 1; j < numVert; j++){
         
         for(int i = 0; i < 26; i++)
-            if(adjacent[index][i])
-                if(adjacent[index][i] && adjacent[index][i] < shortest[i]){
-                    shortest[i] = adjacent[index][i];
-                    connect[i] = index;
-                }
+            if(adjacent[index][i] 
+            && !visited[i]
+            && adjacent[index][i] < shortest[i])
+            {
+                shortest[i] = adjacent[index][i];
+                connect[i] = index;
+            }
         //trace_code(connect, shortest, visited);
 
         min = std::numeric_limits<int>::max();
