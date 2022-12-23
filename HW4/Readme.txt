@@ -1,8 +1,9 @@
-這次作業中共有 4 個檔案
+這次作業中共有 5 個檔案
     - dijkstra.cpp
     - prim.cpp
     - sample_d.txt
     - sample_p.txt
+    - Readme.txt
 
 程式碼執行後，資料夾內會出現新的檔案：output_p.txt / output_d.txt 即是輸出的結果
 
