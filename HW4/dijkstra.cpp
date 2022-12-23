@@ -2,6 +2,8 @@
 #include <string>
 #include <fstream>
 #include <array>
+#include <limits> 
+
 
 void trace_code(std::array<int, 26>& dist);
 
